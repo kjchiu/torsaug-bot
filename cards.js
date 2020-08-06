@@ -1,6 +1,5 @@
 import fetch from "node-fetch";
 import Fuse from "fuse.js";
-import data from "./data.js";
 
 class CardDatabase {
 
@@ -9,8 +8,9 @@ class CardDatabase {
     }
 
     async load() {
-        //this._cards = await fetch("https://netrunnerdb.com/api/2.0/public/cards");
-        this._cards = data.data;
+        let response = await fetch("https://netrunnerdb.com/api/2.0/public/cards");
+        let json = await response.json();
+        this._cards = json.data;
         let options = {
             keys: ["title"],
             includeScore: true,

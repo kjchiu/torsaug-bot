@@ -1,0 +1,17 @@
+{
+  "name": "torsaug-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^12.2.0",
+    "fuse.js": "^6.4.1",
+    "node-fetch": "^2.6.0"
+  }
+}

@@ -22,7 +22,7 @@ const ICONS = [
     "agendapoint",
     "mu",
     "advancement",
-    "strength",
+    "subroutine"
 ];
 
 export default class CardFormatter {
@@ -40,6 +40,10 @@ export default class CardFormatter {
     loadIcons(client) {
         this.emojiIdByIcon = ICONS.reduce((accum, icon) => {
             let emoji = client.emojis.cache.find(emoji => emoji.name === icon);
+            if (! emoji) {
+                console.error(`unknown emoji ${icon}`);
+                return accum;
+            }
             accum[icon] = `<:${emoji.name}:${emoji.id}>`
             return accum;
         }, {});
@@ -54,11 +58,13 @@ export default class CardFormatter {
             case "agenda":
                 return `${card.advancement_cost} ${this.icon("advancement")} - ${card.agenda_points} ${this.icon("agendapoint")}`
             case "ice":
-                return `${card.cost} ${this.icon("credit")} - ${card.strength} ${this.icon("strength")}`
+                return `${card.cost} ${this.icon("credit")} - ${card.strength}`
             case "program":
                 return card.hasOwnProperty("strength")
-                    ? `${card.cost} ${this.icon("credit")} - ${card.memory_cost} ${this.icon("mu")} - ${card.strength} - ${this.icon("strength")}`
+                    ? `${card.cost} ${this.icon("credit")} - ${card.memory_cost} ${this.icon("mu")} - ${card.strength}`
                     : `${card.cost} ${this.icon("credit")} - ${card.memory_cost} ${this.icon("mu")}`;
+            case "identity":
+                return `${card.minimum_deck_size}/${card.influence_limit}`
             default:
                 return card.hasOwnProperty("trash_cost")
                     ? `${card.cost} ${this.icon("credit")} - ${card.trash_cost} ${this.icon("trash")}`
@@ -89,7 +95,8 @@ export default class CardFormatter {
             .setDescription(lines);
         if (card.flavor) {
             embed.setFooter([
-                card.flavor
+                card.flavor,
+                card.illustrator
             ]);
         }
         return embed;

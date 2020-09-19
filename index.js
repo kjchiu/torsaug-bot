@@ -1,7 +1,8 @@
-import { Client } from 'discord.js';
-import fetch from 'node-fetch'
+import { Client } from "discord.js";
+import fetch from "node-fetch"
 import cards from "./cards.js";
 import CardFormatter from "./formatter.js";
+import http from "http";
 
 
 const loadToken = () => {
@@ -19,6 +20,8 @@ client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
     formatter.loadIcons(client);
 });
+
+
 
 client.on('message', async msg => {
     if (msg.author.bot || ! formatter.isLoaded) { return; }
@@ -38,3 +41,10 @@ client.on('message', async msg => {
 });
 
 cards.load().then(() => client.login(token));
+
+if (process.env.PORT) {
+    let echo = http.createServer((req, res) => {
+        req.pipe(res);
+    });
+    server.listen(process.env.PORT);
+}

@@ -1,9 +1,18 @@
 import { Client } from 'discord.js';
-import secret from './secret.js';
 import fetch from 'node-fetch'
 import cards from "./cards.js";
 import CardFormatter from "./formatter.js";
 
+
+const loadToken = () => {
+    try {
+        return require("./secret.js");
+    } catch(ex) {
+        return process.env.TOKEN;
+    }
+};
+
+const token = loadToken();
 const client = new Client();
 const formatter = new CardFormatter();
 client.once('ready', () => {
@@ -28,4 +37,4 @@ client.on('message', async msg => {
 
 });
 
-cards.load().then(() => client.login(secret));
+cards.load().then(() => client.login(token));

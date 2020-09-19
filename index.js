@@ -46,5 +46,5 @@ if (process.env.PORT) {
     let echo = http.createServer((req, res) => {
         req.pipe(res);
     });
-    server.listen(process.env.PORT);
+    echo.listen(process.env.PORT);
 }

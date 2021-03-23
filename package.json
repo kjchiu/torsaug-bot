@@ -1,17 +1,27 @@
 {
-  "name": "torsaug-bot",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "type": "module",
-  "scripts": {
-    "start": "node index.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "discord.js": "^12.2.0",
-    "fuse.js": "^6.4.1",
-    "node-fetch": "^2.6.0"
-  }
+	"name": "torsaug-bot",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"start": "node index.js"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "pretty-quick --staged"
+		}
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"discord.js": "^12.2.0",
+		"fuse.js": "^6.4.1",
+		"node-fetch": "^2.6.0"
+	},
+	"devDependencies": {
+		"husky": "^5.2.0",
+		"prettier": "^2.2.1",
+		"pretty-quick": "^3.1.0"
+	}
 }

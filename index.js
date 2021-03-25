@@ -4,17 +4,19 @@ import cards from "./cards.js";
 import CardFormatter from "./formatter.js";
 import http from "http";
 
-const loadToken = () => {
+const loadToken = async () => {
 	try {
-		return require("./secret.js");
+		const secret = await import("./secret.js");
+		return secret.default;
 	} catch (ex) {
-		return process.env.TOKEN;
+		return Promise.resolve(process.env.TOKEN);
 	}
 };
 
-const token = loadToken();
+
 const client = new Client();
 const formatter = new CardFormatter();
+
 client.once("ready", () => {
 	console.log(`Logged in as ${client.user.tag}`);
 	formatter.loadIcons(client);
@@ -42,7 +44,12 @@ client.on("message", async (msg) => {
 	}
 });
 
-cards.load().then(() => client.login(token));
+cards.load().then(async () => {
+
+	const token = await loadToken();
+	client.login(token);
+	console.log(cards.find("corroder"));
+}).catch(console.error);
 
 if (process.env.PORT) {
 	let echo = http.createServer((req, res) => {

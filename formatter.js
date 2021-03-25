@@ -107,7 +107,7 @@ export default class CardFormatter {
 			.setThumbnail(`https://netrunnerdb.com/card_image/large/${card.code}.jpg`)
 			.setURL(`https://netrunnerdb.com/en/card/${card.code}`)
 			.setDescription(lines);
-			let footer = [`Illus. ${card.illustrator} / ${card.cycle} / ${card.pack} / #${card.position}, ${card.legality ? "✔️" : "🥔"}`]
+			let footer = [`Illus. ${card.illustrator} / ${card.cycle} / ${card.pack} / #${card.position} ${card.legality ? "✔️" : "🥔"}`]
 			card.flavor && footer.unshift(card.flavor);
 			embed.setFooter(footer);
 		return embed;

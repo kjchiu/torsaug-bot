@@ -112,9 +112,9 @@ export default class CardFormatter {
 			if (card.legality === "banned") {
 				legality = "🚫";
 			} else if (card.legality === "rotated") {
-				legality = "✅";
-			} else {
 				legality = "🥔";
+			} else {
+				legality = "✅";
 			}
 			const path = isBigbox
 				? `${card.cycle}`

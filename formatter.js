@@ -108,10 +108,18 @@ export default class CardFormatter {
 			.setURL(`https://netrunnerdb.com/en/card/${card.code}`)
 			.setDescription(lines);
 			const isBigbox = card.cycle === card.pack;
+			let legality;
+			if (card.legality === "banned") {
+				legality = "🚫";
+			} else if (card.legality === "rotated") {
+				legality = "✅";
+			} else {
+				legality = "🥔";
+			}
 			const path = isBigbox
 				? `${card.cycle}`
 				: `${card.cycle} / ${card.pack}`
-			let footer = [`Illus. ${card.illustrator}  / ${path} / #${card.position} ${card.legality ? "✔️" : "🥔"}`]
+			let footer = [`Illus. ${card.illustrator}  / ${path} / #${card.position} ${legality}`]
 			card.flavor && footer.unshift(card.flavor);
 			embed.setFooter(footer);
 		return embed;

@@ -40,10 +40,14 @@ class CardDatabase {
 			this._fetch("cards"),
 			this._fetch("cycles"),
 			this._fetch("packs"),
-		]).then(([cards, cycles, packs]) => {
+			this._fetch("mwl"),
+		]).then(([cards, cycles, packs, mwl]) => {
 			this._cycles = asLUT(cycles.data, "code");
 			this._packs = asLUT(packs.data, "code");
 			this._cards = cards.data;
+			this._mwl = mwl.data.sort((a, b) => {
+				return new Date(b.date_start).valueOf() - new Date(a.date_start).valueOf();
+			}).shift();
 
 			
 			this._sortedCodesByName = Object.values(this._cards).reduce((accum, card) => {
@@ -105,6 +109,16 @@ class CardDatabase {
 
 	}
 
+	getLegality(card) {
+		const cycle = this.getCycle(card);
+		if (STANDARD.has(cycle.code)) {
+			const mwl = this._mwl.cards && this._mwl.cards[card.code] || {};
+			return mwl.deck_limit === 0 && "banned";
+		} else {
+			return "rotated";
+		}
+	}
+
 	find(name) {
 		let matches = this._fuse.search(name);
 		if (!matches.length) {
@@ -119,7 +133,8 @@ class CardDatabase {
 		card = this.getStandardOrOldestCard(card.title);
 		const pack = this._packs[card.pack_code].name;
 		const cycle = this.getCycle(card);
-		const legality = STANDARD.has(cycle.code);
+		const legality = this.getLegality(card);
+		
 		return {
 			...card,
 			pack,

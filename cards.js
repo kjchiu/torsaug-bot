@@ -34,6 +34,12 @@ class CardDatabase {
 				res.json());
 	}
 
+	normalizeTitle(title) {
+		const deomposed = [...title.normalize("NFD")];
+		const stripped =[...deomposed].filter(c => /[ -~]/.test(c)).join("")
+		return stripped;
+	}
+
 	load() {
 		console.log("#load()");
 		if (this._updating) {
@@ -50,6 +56,9 @@ class CardDatabase {
 			this._cycles = asLUT(cycles.data, "code");
 			this._packs = asLUT(packs.data, "code");
 			this._cards = cards.data;
+			this._cards.forEach(card => {
+				card.title_normalized = this.normalizeTitle(card.title);
+			})
 			this._lastUpdated = Date.now();
 			this._mwl = mwl.data.sort((a, b) => {
 				return new Date(b.date_start).valueOf() - new Date(a.date_start).valueOf();
@@ -75,7 +84,7 @@ class CardDatabase {
 				}
 				return accum;
 			})
-			this._indexCards(cards.data);
+			this._indexCards();
 			delete this._updating
 		});
 		return this._updating;
@@ -106,7 +115,7 @@ class CardDatabase {
 
 	_indexCards() {
 		let options = {
-			keys: ["title"],
+			keys: ["title", "title_normalized"],
 			includeScore: true,
 			threshold: 0.6,
 			location: 0,
@@ -148,6 +157,7 @@ class CardDatabase {
 			.sort((a, b) => a.item.title.length - b.item.title.length);
 
 		let card = matches[0].item;
+		console.log(`${name} -> ${card.title_normalized}`);
 		card = this.getStandardOrOldestCard(card.title);
 		const pack = this._packs[card.pack_code].name;
 		const cycle = this.getCycle(card);

@@ -15,9 +15,9 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"discord.js": "^12.2.0",
-		"fuse.js": "^6.4.1",
-		"node-fetch": "^2.6.0"
+		"discord.js": "12.2.0",
+		"fuse.js": "6.6.2",
+		"node-fetch": "2.6.0"
 	},
 	"devDependencies": {
 		"husky": "^5.2.0",

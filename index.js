@@ -48,7 +48,7 @@ cards.load().then(async () => {
 
 	const token = await loadToken();
 	client.login(token);
-	console.log(cards.find("corroder"));
+	console.log(cards.find("afontonov"));
 }).catch(console.error);
 
 if (process.env.PORT) {

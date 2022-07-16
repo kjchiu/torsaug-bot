@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { Client, Intents } from "discord.js";
 import fetch from "node-fetch";
 import cards from "./cards.js";
 import CardFormatter from "./formatter.js";
@@ -14,7 +14,9 @@ const loadToken = async () => {
 };
 
 
-const client = new Client();
+const client = new Client({
+	intents: 377957189632,
+});
 const formatter = new CardFormatter();
 
 client.once("ready", () => {
@@ -22,10 +24,11 @@ client.once("ready", () => {
 	formatter.loadIcons(client);
 });
 
-client.on("message", async (msg) => {
+client.on("messageCreate", async (msg) => {
 	if (msg.author.bot || !formatter.isLoaded) {
 		return;
 	}
+	console.log("<-", msg.content);
 
 	let regex = /\[\[([^\[\]]*)\]\]/g;
 	for (
@@ -45,10 +48,8 @@ client.on("message", async (msg) => {
 });
 
 cards.load().then(async () => {
-
 	const token = await loadToken();
 	client.login(token);
-	console.log(cards.find("corroder"));
 }).catch(console.error);
 
 if (process.env.PORT) {

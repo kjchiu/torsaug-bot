@@ -2,9 +2,7 @@ import fetch from "node-fetch";
 import Fuse from "fuse.js";
 
 const STANDARD = new Set([
-	"order-and-chaos",
 	"data-and-destiny",
-	"mumbad",
 	"flashpoint",
 	"red-sand",
 	"kitara",
@@ -14,6 +12,7 @@ const STANDARD = new Set([
 	'nagum-opus-reprint',
 	'system-gateway',
 	'system-update-2021',
+	'borealis'
 ]);
 
 const asLUT = (arr, prop) => {
@@ -36,7 +35,13 @@ class CardDatabase {
 	}
 
 	load() {
-		return Promise.all([
+		console.log("#load()");
+		if (this._updating) {
+			console.log("already updating");
+			return this._updating;
+		}
+		console.log("loading cards");
+		this._updating = Promise.all([
 			this._fetch("cards"),
 			this._fetch("cycles"),
 			this._fetch("packs"),
@@ -45,6 +50,7 @@ class CardDatabase {
 			this._cycles = asLUT(cycles.data, "code");
 			this._packs = asLUT(packs.data, "code");
 			this._cards = cards.data;
+			this._lastUpdated = Date.now();
 			this._mwl = mwl.data.sort((a, b) => {
 				return new Date(b.date_start).valueOf() - new Date(a.date_start).valueOf();
 			}).shift();
@@ -70,7 +76,9 @@ class CardDatabase {
 				return accum;
 			})
 			this._indexCards(cards.data);
+			delete this._updating
 		});
+		return this._updating;
 	}
 
 	getCycle(card={}) {
@@ -119,7 +127,17 @@ class CardDatabase {
 		}
 	}
 
-	find(name) {
+	shouldUpdate() {
+		const delta = (Date.now() - this._lastUpdated) / 1000;
+		console.log(`card index age: ${delta}`)
+		return delta >= 60 * 60 * 24;
+	}
+
+	async find(name) {
+		if (this.shouldUpdate()) {
+			await this.load();
+		}
+
 		let matches = this._fuse.search(name);
 		if (!matches.length) {
 			return null;

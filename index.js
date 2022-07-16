@@ -1,4 +1,4 @@
-import { Client } from "discord.js";
+import { Client, Intents } from "discord.js";
 import fetch from "node-fetch";
 import cards from "./cards.js";
 import CardFormatter from "./formatter.js";
@@ -14,7 +14,7 @@ const loadToken = async () => {
 };
 
 
-const client = new Client();
+const client = new Client({ intents: new Intents([Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES])});
 const formatter = new CardFormatter();
 
 client.once("ready", () => {
@@ -34,7 +34,7 @@ client.on("message", async (msg) => {
 		matches = regex.exec(msg.content)
 	) {
 		let [_, query] = matches;
-		let card = cards.find(query);
+		let card = await cards.find(query);
 		if (!card) {
 			return;
 		}

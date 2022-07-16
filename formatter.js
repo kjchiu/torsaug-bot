@@ -26,7 +26,13 @@ const ICONS = [
 ];
 
 export default class CardFormatter {
+
 	emojiIdByIcon;
+	imageUrlTemplate;
+	
+	constructor() {
+		this.imageUrlTemplate = "https://static.nrdbassets.com/v1/large/{code}.jpg";
+	}
 
 	get isLoaded() {
 		return !!this.emojiIdByIcon;
@@ -104,24 +110,24 @@ export default class CardFormatter {
 		let embed = new MessageEmbed()
 			.setColor(FACTION_COLOURS[card.faction_code] || "#808080")
 			.setTitle((card.uniqueness ? "♦ " : "") + card.title)
-			.setThumbnail(`https://netrunnerdb.com/card_image/large/${card.code}.jpg`)
+			.setThumbnail(this.imageUrlTemplate.replace(/\{code\}/, card.code))
 			.setURL(`https://netrunnerdb.com/en/card/${card.code}`)
 			.setDescription(lines);
-			const isBigbox = card.cycle === card.pack;
-			let legality;
-			if (card.legality === "banned") {
-				legality = "🚫";
-			} else if (card.legality === "rotated") {
-				legality = "🥔";
-			} else {
-				legality = "✅";
-			}
-			const path = isBigbox
-				? `${card.cycle}`
-				: `${card.cycle} / ${card.pack}`
-			let footer = [`Illus. ${card.illustrator}  / ${path} / #${card.position} ${legality}`]
-			card.flavor && footer.unshift(card.flavor);
-			embed.setFooter(footer);
+		const isBigbox = card.cycle === card.pack;
+		let legality;
+		if (card.legality === "banned") {
+			legality = "🚫";
+		} else if (card.legality === "rotated") {
+			legality = "🥔";
+		} else {
+			legality = "✅";
+		}
+		const path = isBigbox
+			? `${card.cycle}`
+			: `${card.cycle} / ${card.pack}`
+		let footer = [`Illus. ${card.illustrator}  / ${path} / #${card.position} ${legality}`]
+		card.flavor && footer.unshift(card.flavor);
+		embed.setFooter(footer);
 		return embed;
 	}
 }

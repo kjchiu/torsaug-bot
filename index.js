@@ -22,33 +22,44 @@ client.once("ready", () => {
 	formatter.loadIcons(client);
 });
 
-client.on("message", async (msg) => {
-	if (msg.author.bot || !formatter.isLoaded) {
-		return;
-	}
-
-	let regex = /\[\[([^\[\]]*)\]\]/g;
+async function parse(msg, regex, format) {
 	for (
 		let matches = regex.exec(msg.content);
 		!!matches;
 		matches = regex.exec(msg.content)
 	) {
-		let [_, query] = matches;
+		let [idx, query] = matches;
 		let card = await cards.find(query);
 		if (!card) {
 			return;
 		}
 
-		let embed = formatter.format(card);
-		msg.channel.send(embed);
+		const isArtOnly = msg.content[idx - 1] === "{";
+		let response = format(card)
+		console.log(isArtOnly, response)
+		msg.channel.send(response);
 	}
+}
+
+client.on("message", async (msg) => {
+	if (msg.author.bot || !formatter.isLoaded) {
+		return;
+	}
+	const cardRegex = /\[\[([^\[\]]*)\]\]/g;
+	const artRegex = /\{\{([^\{\}]*)\}\}/g;
+
+	await parse(msg, cardRegex, (card) => formatter.format(card))
+	await parse(msg, artRegex, (card) => formatter.formatArt(card))
+
 });
 
-cards.load().then(async () => {
-
+cards.load().then(async (imageUrlTemplate) => {
 	const token = await loadToken();
-	client.login(token);
-	console.log(cards.find("afontonov"));
+	const authed = await client.login(token);
+	console.log((await cards.find("afontonov"))?.code);
+	if (imageUrlTemplate) {
+		formatter.imageUrlTemplate = imageUrlTemplate;
+	}
 }).catch(console.error);
 
 if (process.env.PORT) {

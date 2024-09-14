@@ -130,4 +130,11 @@ export default class CardFormatter {
 		embed.setFooter(footer);
 		return embed;
 	}
+
+
+	formatArt(card) {
+		const template = card.imageUrlTemplate ?? this.imageUrlTemplate;
+		console.log(template);
+		return template.replace(/\{code\}/, card.code);
+	}
 }

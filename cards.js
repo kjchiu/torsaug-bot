@@ -2,8 +2,6 @@ import fetch from "node-fetch";
 import Fuse from "fuse.js";
 
 const STANDARD = new Set([
-	"data-and-destiny",
-	"flashpoint",
 	"red-sand",
 	"kitara",
 	"reign-and-reverie",
@@ -12,7 +10,8 @@ const STANDARD = new Set([
 	'nagum-opus-reprint',
 	'system-gateway',
 	'system-update-2021',
-	'borealis'
+	'borealis',
+	"liberation",
 ]);
 
 const asLUT = (arr, prop) => {
@@ -86,6 +85,7 @@ class CardDatabase {
 			})
 			this._indexCards();
 			delete this._updating
+			return cards.imageUrlTemplate;
 		});
 		return this._updating;
 	}
@@ -128,7 +128,7 @@ class CardDatabase {
 
 	getLegality(card) {
 		const cycle = this.getCycle(card);
-		if (STANDARD.has(cycle.code)) {
+		if (! cycle.rotated) {
 			const mwl = this._mwl.cards && this._mwl.cards[card.code] || {};
 			return mwl.deck_limit === 0 && "banned";
 		} else {

@@ -2,16 +2,11 @@ import fetch from "node-fetch";
 import Fuse from "fuse.js";
 
 const STANDARD = new Set([
-	"red-sand",
-	"kitara",
-	"reign-and-reverie",
-	"magnum-opus",
 	'ashes',
-	'nagum-opus-reprint',
 	'system-gateway',
-	'system-update-2021',
 	'borealis',
 	"liberation",
+	"elevation",
 ]);
 
 const asLUT = (arr, prop) => {

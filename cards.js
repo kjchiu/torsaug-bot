@@ -123,7 +123,7 @@ class CardDatabase {
 
 	getLegality(card) {
 		const cycle = this.getCycle(card);
-		if (! cycle.rotated) {
+		if (STANDARD.has(cycle.code)) {
 			const mwl = this._mwl.cards && this._mwl.cards[card.code] || {};
 			return mwl.deck_limit === 0 && "banned";
 		} else {

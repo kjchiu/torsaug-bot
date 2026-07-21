@@ -7,6 +7,7 @@ const STANDARD = new Set([
 	'borealis',
 	"liberation",
 	"elevation",
+	"vantage-point"
 ]);
 
 const asLUT = (arr, prop) => {
